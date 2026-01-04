@@ -44,7 +44,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ customer, notificat
 
     const handleToggle = () => setIsOpen(!isOpen);
 
-    const markAllAsRead = () => {
+const markAllAsRead = () => {
         setNotifications(prev => prev.map(n => 
             n.customerId === customer.phoneNumber ? { ...n, read: true } : n
         ));
@@ -52,16 +52,15 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ customer, notificat
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <button onClick={handleToggle} className="relative p-2 rounded-full text-content-light-secondary dark:text-content-dark-secondary hover:bg-gray-200 dark:hover:bg-gray-700">
+            <button onClick={handleToggle} aria-haspopup="true" className="relative">
                 <BellIcon />
                 {unreadCount > 0 && (
-                    <span className="absolute top-0 right-0 h-4 w-4 bg-danger text-white text-xs font-bold rounded-full flex items-center justify-center">
-                        {unreadCount}
-                    </span>
+                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs rounded-full bg-primary text-white">{unreadCount}</span>
                 )}
             </button>
+
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-background-light-primary dark:bg-background-dark-secondary rounded-lg shadow-xl border dark:border-gray-700 z-50">
+                <div className="absolute right-0 left-0 sm:left-auto mt-2 w-full sm:w-80 max-w-xs sm:max-w-none bg-background-light-primary dark:bg-background-dark-secondary rounded-lg shadow-xl border dark:border-gray-700 z-50">
                     <div className="p-3 flex justify-between items-center border-b dark:border-gray-700">
                         <h4 className="font-semibold">Notifications</h4>
                         {unreadCount > 0 && (
@@ -73,12 +72,12 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ customer, notificat
                             <p className="text-center text-sm text-content-light-secondary dark:text-content-dark-secondary py-6">No notifications yet.</p>
                        ) : (
                             customerNotifications.map(n => (
-                                <div key={n.id} className={`p-3 border-b dark:border-gray-700 ${!n.read ? 'bg-primary/5 dark:bg-primary/10' : ''}`}>
-                                    <div className="flex gap-3">
-                                        <div className="pt-1">{getIconForType(n.type)}</div>
-                                        <div>
-                                            <p className="text-sm font-semibold">{n.vendorShopName}</p>
-                                            <p className="text-sm">{n.message}</p>
+                                <div key={n.id} className={`p-3 border-b dark:border-gray-700 ${!n.read ? 'bg-primary/5 dark:bg-primary/10' : ''}`}> 
+                                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 break-words">
+                                        <div className="pt-1 flex-shrink-0">{getIconForType(n.type)}</div>
+                                        <div className="min-w-0 w-full">
+                                            <p className="text-sm font-semibold break-words w-full" title={n.vendorShopName}>{n.vendorShopName}</p>
+                                            <p className="text-sm break-words whitespace-pre-line w-full" style={{wordBreak: 'break-word'}}>{n.message}</p>
                                             <p className="text-xs text-content-light-secondary dark:text-content-dark-secondary mt-1">{formatDate(n.date)}</p>
                                         </div>
                                     </div>
@@ -90,6 +89,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ customer, notificat
             )}
         </div>
     );
+
 };
 
 export default NotificationBell;
